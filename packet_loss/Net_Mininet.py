@@ -3,7 +3,6 @@
 import sys
 import time 
 import networkx as nx
-import matplotlib.pyplot as plt
 from mininet.net import Mininet
 from mininet.node import Controller, RemoteController, OVSController
 from mininet.node import CPULimitedHost, Host, Node
@@ -30,7 +29,7 @@ NumLinkHT=0
 #variable used in order to count the numer of links between switches S in the topology
 NumLinkSS=0
          
-def myNetwork():
+def myNetwork(topo_file):
 	
 	#number of switch S in the topology
 	n_switchs=0
@@ -41,7 +40,7 @@ def myNetwork():
 	global arrayHost	
 	global NumLinkHT,NumLinkSS,NumLinkTS
 	
-	G = nx.read_graphml('Geant2012.graphml',str)
+	G = nx.read_graphml(topo_file,str)
 	
 	print("Graph %s has %d nodes with %d edges"
           % (G.name, nx.number_of_nodes(G), nx.number_of_edges(G)))
@@ -62,14 +61,14 @@ def myNetwork():
                       port=6633)
 
 	info( '*** Add switches S \n')
-	for switch in G.nodes_iter():
+	for switch in G.nodes():
 		switch_id="s"+str(int(switch)+1)
 		id_node=int(int(switch)+1)
 		s=net.addSwitch(switch_id,dpid=hex(id_node)[2:],cls=OVSKernelSwitch)
 		print "Switch S :",s
 		
 	info( '*** Add switches T \n')
-	for switch in G.nodes_iter():
+	for switch in G.nodes():
 		val=int(int(switch)+1)+N
 		switch_id="s"+str(val)
 		id_node=int(int(switch)+1)
@@ -77,7 +76,7 @@ def myNetwork():
 		print "Switch T:",t	
 
 	info( '*** Add hosts H \n')
-	for host in G.nodes_iter(data = True):
+	for host in G.nodes(data = True):
 		host_id="h"+str(int(host[0])+1)
 		ris=int(int(host[0])+1)+ int(10)
 		host_mac="00:00:00:00:00:"+str(ris)
@@ -96,7 +95,7 @@ def myNetwork():
 		arrayHost.append(h)
 
 	info( '*** Add links between switch S \n')
-	for edge in G.edges_iter():
+	for edge in G.edges():
 		edge0_id="s"+str(int(edge[0])+1)
 		edge1_id="s"+str(int(edge[1])+1)
 		print "Add Links between switch S : ",edge0_id," and ",edge1_id
@@ -105,7 +104,7 @@ def myNetwork():
 	print "Tot Link between switch S : ",NumLinkSS
 	
 	info( '*** Add links between switch S and switch T \n')	
-	for nod in G.nodes_iter():
+	for nod in G.nodes():
 		val=int(int(nod)+1)+N			
 		tswitch_ID="s"+str(val)
 		switch_ID="s"+str(int(nod)+1)
@@ -117,7 +116,7 @@ def myNetwork():
 	print "Tot Link between switch S and switch T : ",NumLinkTS		
 		
 	info( '*** Add links between host H and switch T \n')	
-	for hos in G.nodes_iter():
+	for hos in G.nodes():
 		val=int(int(hos)+1)+N			
 		host_ID="h"+str(int(hos)+1)
 		tswitch_ID="s"+str(val)
@@ -136,12 +135,12 @@ def myNetwork():
 		controller.start()
 		
 	info( '*** Starting switches S\n')
-	for sw in G.nodes_iter():	
+	for sw in G.nodes():	
 		s_id="s"+str(int(sw)+1)
 		net.get(s_id).start([c0])
 		
 	info( '*** Starting switches T\n')
-	for sw in G.nodes_iter():	
+	for sw in G.nodes():	
 		w=int(int(sw)+1)+N
 		s_id="s"+str(w)
 		net.get(s_id).start([c0])	
@@ -173,6 +172,13 @@ def myNetwork():
 	net.stop()
 
 if __name__ == '__main__':
+
+    if len(sys.argv)!=2:
+        print "Usage: "+sys.argv[0]+" topology.graphml"
+        exit(0)
+
+    topo_file=sys.argv[1]
+
     setLogLevel( 'info' )
-    myNetwork()
+    myNetwork(topo_file)
 
