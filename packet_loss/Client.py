@@ -129,12 +129,6 @@ def receiver(stop,host):
         data['recv']=r
         zmq_skt.send_pyobj(data)
         data.clear()
-
-
-
-
-
-
     
 if __name__ == "__main__":
     client()
