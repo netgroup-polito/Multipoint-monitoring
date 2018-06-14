@@ -4,13 +4,13 @@
 
 This test requires:
 ```
-python2.7, openvswitch, mininet, net-tools, screen, networkx(v>=2.0), zmq
+python2.7, openvswitch, mininet, net-tools, screen, python-devel, tkinter, networkx(v>=2.0), zmq, matplotlib
 ```
 
 On Fedora/Red Hat they can be installed with:
 ```sh
-sudo dnf install python2 openvswitch net-tools screen zeromq
-sudo pip install networkx zmq
+sudo dnf -y install python2 openvswitch net-tools screen zeromq python-devel tkinter redhat-rpm-config
+sudo pip install networkx zmq matplotlib
 mininet/util/install.sh -n
 ```
 
@@ -34,10 +34,23 @@ mininet/util/install.sh -n
     ```
 - Start the controller, choosing a topology from the "topologies" folder and, optionally, setting the addresses to select the monitored flow:
     ```sh
-    screen -S controller -d -m python pox/pox.py Controller --topo=../topologies/<TOPOLOGY>.graphml [--IPsrc=<x.x.x.x> --IPdst=<x.x.x.x> --MACsrc=<XX:XX:XX:XX:XX:XX> --MACdst=<XX:XX:XX:XX:XX:XX>] openflow.discovery
+    screen -S controller -d -m python pox/pox.py Controller --topology=../topologies/<TOPOLOGY>.graphml [--IPsrc=<x.x.x.x> --IPdst=<x.x.x.x> --MACsrc=<XX:XX:XX:XX:XX:XX> --MACdst=<XX:XX:XX:XX:XX:XX>] openflow.discovery
     ```
 - Start the Mininet script (using the same topology):
     ```sh 
     sudo python Network_sim.py ../topologies/<TOPOLOGY>.graphml
     ```
-
+- The Mininet script starts the packet generator `Client.py` in each host. This script sends a report to the collector `Server.py`, which writes the amount of sent/received files in `results.dat` and `summary.dat`. You can monitor the summary file with:
+    ```sh
+    watch "cat summary.dat |tail"
+    ```
+    At the end of the test, `Server.py` writes in `summary.dat` the total amount of packets sent, received and lost. This values can be compared with the measured obtained with the alternate marking method implemented in the controller.
+- At the end of the test, stop the controller with:
+    ```sh
+    screen -S controller -X stuff ^C
+    ```
+  The controller saves in `results.json` the per-period measurements. 
+- You can plot the amount of measured lost packets with:
+    ```sh
+    python plot.py
+    ```

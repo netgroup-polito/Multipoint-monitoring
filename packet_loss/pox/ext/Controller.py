@@ -26,8 +26,8 @@ import signal
 import threading
 import re
 
-topo_file = ""
-
+#networkx topology
+topo = 0
 #count the number of matching rules inserted in switch S
 num_ruleS = 0
 #count the number of matching rules inserted in switch T
@@ -1075,8 +1075,7 @@ class LearningSwitch(object):
         msg.actions.append(of.ofp_action_output(port=out))
         self.connection.send(msg)
 
-#insert the rules with high priority to forward tha packet
-
+    #insert the rules with high priority to forward tha packet
     def forwarding_high_p(self):
 
         if self.connection.dpid <= 40:
@@ -1799,15 +1798,13 @@ class LearningSwitch(object):
             global C_get_labels
             global Array_Country
             global dict1
-            global topo_file
+            global topo
 
             C_get_labels = C_get_labels + 1
 
             if C_get_labels == 1:
 
-                g = NX.read_graphml(topo_file, str)
-
-                for switch in g.nodes(data=True):
+                for switch in topo.nodes(data=True):
                     index = int(int(switch[0]) + 1)
                     Array_Country[index] = switch[1]['label']
                     dict1[index] = switch[1]['label']
@@ -2328,7 +2325,7 @@ def signal_handler(signal, frame):
     sys.exit(0)
 
 
-def launch(topo,
+def launch(topology,
            IPsrc=0,
            IPdst=0,
            MACsrc=0,
@@ -2336,10 +2333,9 @@ def launch(topo,
            transparent=False,
            hold_down=_flood_delay):
 
-    global topo_file
+    global topo
     global ip_src, ip_dst, mac_src, mac_dst
-
-    topo_file = topo
+    global N
 
     if (IPsrc != 0 and not is_valid_ipv4_address(IPsrc)):
         raise RuntimeError("Wrong IPv4 address: " + str(IPsrc))
@@ -2379,6 +2375,9 @@ def launch(topo,
         assert _flood_delay >= 0
     except:
         raise RuntimeError("Expected hold-down to be a number")
+
+    topo = NX.read_graphml(topology, str)
+    N = NX.number_of_nodes(topo)
 
     def start():
         if not core.NX.convert_packet_in:
