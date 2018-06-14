@@ -1,1 +1,3 @@
 *.pyc
+packet_loss/error.log
+packet_loss/results.json

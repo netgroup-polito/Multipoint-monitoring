@@ -158,7 +158,7 @@ class LearningSwitch (object):
     connection.addListeners(self)
     self.hold_down_expired = _flood_delay == 0
 
-      #set flag TOS to 0 or 1 every T=N seconds
+    #set flag TOS to 0 or 1 every T=N seconds
     self._set_flag(60)
     #read the counters every T=N/2 seconds
     self._read_counters(30)
@@ -217,10 +217,8 @@ class LearningSwitch (object):
       #just once insert in the switches S the forwarding rules with high priority
       Timer(dt, self.forwarding_high_p, recurring=False)
 
-
-
-#rules forwarding low priority in switch T
-  def  forwarding_rules_lowpriority_switchT(self):
+  #rules forwarding low priority in switch T
+  def forwarding_rules_lowpriority_switchT(self):
 
     msg = nx.nx_flow_mod()
     msg.table_id = 0
@@ -241,7 +239,6 @@ class LearningSwitch (object):
     msg.match.of_eth_type = pkt.ethernet.IP_TYPE
     msg.actions.append(of.ofp_action_output(port = 1))
     self.connection.send(msg)
-
 
 #rules setting flag in swicth T
   def setting_flag_rule_in_switch_T_macs_macd_ips_ipd(self,tos):
@@ -352,8 +349,7 @@ class LearningSwitch (object):
     msg.actions.append(of.ofp_action_output(port = 2))
     self.connection.send(msg)
 
-
-#rules matching flag in swicth S
+  #rules matching flag in swicth S
   def matching_flag_rule_in_switchS_macs_macd_ips_ipd(self,port,tos):
 
     t=tos
@@ -462,9 +458,7 @@ class LearningSwitch (object):
     msg.actions.append(nx.nx_action_resubmit.resubmit_table(table = 2))
     self.connection.send(msg)
 
-
   def set_bit(self):
-
 
       if self.connection.dpid > 100:
 
@@ -521,7 +515,6 @@ class LearningSwitch (object):
                 print "Insert rules of setting in switch T start at  : ",localtime," Switch :",self.connection.dpid,"Count : ",C_set
                 tos=0x04
                 self.setting_flag_rule_in_switch_T(tos)
-
 
         elif flag_set==1:
 
@@ -598,7 +591,6 @@ class LearningSwitch (object):
                 if flag_match_S==0:
                     flag_match_S=1
 
-
             if flag_match_S==1:
 
                 if var1==1 and var2==1 and var3==1 and var4==1:
@@ -621,7 +613,6 @@ class LearningSwitch (object):
                         port=porta
                         tos=0
                         self.matching_flag_rule_in_switchS_macs_macd_ips_ipd(port,tos)
-
 
                 elif var1==1 and var2==1:
 
@@ -664,7 +655,6 @@ class LearningSwitch (object):
                         port=porta
                         tos=0
                         self.matching_flag_rule_in_switchS_macs_macd(port,tos)
-
 
                 elif var1==1 and var3==1:
 
@@ -732,12 +722,10 @@ class LearningSwitch (object):
                         tos=0
                         self.matching_flag_rule_in_switchS(port,tos)
 
-
             if C_match_S==N:
              C_match_S=0
 
   def forwarding_lowp_T(self):
-
 
         localtime = time.asctime( time.localtime(time.time()) )
 
@@ -749,7 +737,6 @@ class LearningSwitch (object):
 
         if self.connection.dpid > 100:
 
-
             C_match_T=C_match_T+1
 
             msg = nx.nx_flow_mod_table_id()
@@ -759,12 +746,9 @@ class LearningSwitch (object):
                 if flag_match_T==0:
                     flag_match_T=1
 
-
             if flag_match_T==1:
 
-
                 if var1==1 and var2==1 and var3==1 and var4==1:
-
 
                     self.forwarding_rules_lowpriority_switchT()
 
@@ -778,11 +762,9 @@ class LearningSwitch (object):
 
                 elif var1==1 and var3==1:
 
-
                     self.forwarding_rules_lowpriority_switchT()
 
                 elif var2==1 and var4==1:
-
 
                     self.forwarding_rules_lowpriority_switchT()
 
@@ -793,12 +775,10 @@ class LearningSwitch (object):
 
                     self.forwarding_rules_lowpriority_switchT()
 
-
             if C_match_T==N:
                 C_match_T=0
 
   def read_counter(self):
-
 
     #sends the requests to all the switches in the topology connected to the controller
     if self.connection.dpid <=40:
@@ -824,7 +804,6 @@ class LearningSwitch (object):
 
         if C_read==N:
             C_read=0
-
 
 #match the flag in the packet and set the number of port of switch in the TOS field.....monitoring without filters
   def func1(self,mac_address_D,ip_address_D,tos,nwtos):
@@ -895,7 +874,6 @@ class LearningSwitch (object):
 
 #match the flag in the packet and set the number of port of switch in the TOS field.....monitoring with filter on ips and macs
   def func1_ips_macs(self, mac_address_D, ip_address_D,ips,macs,tos,nwtos):
-
 
         mac_D=mac_address_D
         ip_D=ip_address_D
@@ -968,10 +946,8 @@ class LearningSwitch (object):
         msg.actions.append(nx.nx_action_resubmit.resubmit_table(table = 3))
         self.connection.send(msg)
 
-
 #rules forwarding in switch S
   def ForwardingRule_SwitchS_macs_macd_ips_ipd(self,port,tos,outport):
-
 
             t=tos
             p=port
@@ -1010,7 +986,6 @@ class LearningSwitch (object):
             self.connection.send(msg)
 
   def ForwardingRule_SwitchS_macs_macd(self,port,tos,outport):
-
 
             t=tos
             p=port
@@ -1080,10 +1055,8 @@ class LearningSwitch (object):
             msg.actions.append(of.ofp_action_output(port = out))
             self.connection.send(msg)
 
-
 #insert the rules with high priority to forward tha packet
   def forwarding_high_p(self):
-
 
 
     if self.connection.dpid <=40 :
@@ -1103,7 +1076,6 @@ class LearningSwitch (object):
         if C_forward_hp==1:
             if flag_forward_hp==0:
                 flag_forward_hp=1
-
 
         if flag_forward_hp==1:
 
@@ -1135,7 +1107,6 @@ class LearningSwitch (object):
                     self.ForwardingRule_SwitchS_macs_macd_ips_ipd(port,tos,outport)
 
             elif var1==1 and var2==1:
-
 
                 print "Insert rules table 3 in switch S start at  : ",localtime," Switch :",self.connection.dpid,"Count : ",C_forward_hp
                 dpid=self.connection.dpid
@@ -1191,7 +1162,6 @@ class LearningSwitch (object):
 
             elif var1==1 and var3==1:
 
-
                 print "Insert rules table 3 in switch S start at  : ",localtime," Switch :",self.connection.dpid,"Count : ",C_forward_hp
                 dpid=self.connection.dpid
 
@@ -1218,7 +1188,6 @@ class LearningSwitch (object):
                     self.ForwardingRule_SwitchS_macs_ips(port,tos,outport)
 
             elif var2==1 and var4==1:
-
 
                 print "Insert rules table 3 in switch S start at  : ",localtime," Switch :",self.connection.dpid,"Count : ",C_forward_hp
                 dpid=self.connection.dpid
@@ -1278,7 +1247,6 @@ class LearningSwitch (object):
 #set the port number of a specific switch in a TOS field of the IP packet in order to count the packet in output from a specific port of a switch
   def set_port_in_TOS(self):
 
-
     if self.connection.dpid <= 40:
 
         localtime = time.asctime( time.localtime(time.time()) )
@@ -1315,7 +1283,6 @@ class LearningSwitch (object):
             if flag_set_port==0:
                 flag_set_port=1
 
-
         if flag_set_port==1:
 
             if var1==1 and var2==1 and var3==1 and var4==1:
@@ -1339,9 +1306,7 @@ class LearningSwitch (object):
                 nwtos=((16<<3))
                 self.func1_ips_ipd_macs_macd(mac_d,ip_d,ip_src,ip_dst,mac_src,mac_dst,tos,nwtos)
 
-
                 ShortPath=[]
-
 
                 for S in AllShortPath:
                     if S[0][0]==dpid:
@@ -1353,7 +1318,6 @@ class LearningSwitch (object):
                         ip_destination=0
                         mac_destination=0
                         pos=0
-
 
                         if len(s)>1:
 
@@ -1373,7 +1337,6 @@ class LearningSwitch (object):
                             tos=0
                             nwtos=((s1_out<<3))
                             self.func1_ips_ipd_macs_macd(mac_destination,ip_destination,ip_src,ip_dst,mac_src,mac_dst,tos,nwtos)
-
 
 
 
@@ -1401,9 +1364,7 @@ class LearningSwitch (object):
                 nwtos=((16<<3))
                 self.func1_ips_ipd(mac_d,ip_d,ip_src,ip_dst,tos,nwtos)
 
-
                 ShortPath=[]
-
 
                 for S in AllShortPath:
                     if S[0][0]==dpid:
@@ -1433,7 +1394,6 @@ class LearningSwitch (object):
                             tos=0
                             nwtos=((s1_out<<3))
                             self.func1_ips_ipd(mac_destination,ip_destination,ip_src,ip_dst,tos,nwtos)
-
 
                         elif len(s)==1:
                             print" Shortest_Path with also one node "
@@ -1459,9 +1419,7 @@ class LearningSwitch (object):
                 nwtos=((16<<3))
                 self.func1_macs_macd(mac_d,ip_d, mac_src,mac_dst,tos,nwtos)
 
-
                 ShortPath=[]
-
 
                 for S in AllShortPath:
                     if S[0][0]==dpid:
@@ -1491,7 +1449,6 @@ class LearningSwitch (object):
                             tos=0
                             nwtos=((s1_out<<3))
                             self.func1_macs_macd(mac_destination,ip_destination,mac_src,mac_dst,tos,nwtos)
-
 
                         elif len(s)==1:
                             print" Shortest_Path with also one node "
@@ -1517,9 +1474,7 @@ class LearningSwitch (object):
                 nwtos=((16<<3))
                 self.func1_ips_macs(mac_d,ip_d,ip_src,mac_src,tos,nwtos)
 
-
                 ShortPath=[]
-
 
                 for S in AllShortPath:
                     if S[0][0]==dpid:
@@ -1549,7 +1504,6 @@ class LearningSwitch (object):
                             tos=0
                             nwtos=((s1_out<<3))
                             self.func1_ips_macs(mac_destination, ip_destination, ip_src,mac_src,tos,nwtos)
-
 
                         elif len(s)==1:
                             print" Shortest_Path with also one node "
@@ -1571,14 +1525,11 @@ class LearningSwitch (object):
                 nwtos=((16<<3)+4)
                 self.func1_ipd_macd(mac_d,ip_d,ip_dst,mac_dst,tos,nwtos)
 
-
                 tos=0
                 nwtos=((16<<3))
                 self.func1_ipd_macd(mac_d,ip_d,ip_dst,mac_dst,tos,nwtos)
 
-
                 ShortPath=[]
-
 
                 for S in AllShortPath:
                     if S[0][0]==dpid:
@@ -1601,7 +1552,6 @@ class LearningSwitch (object):
                             ip_destination="10.0.0."+str(s[len(s)-1])
                             mac_destination="00:00:00:00:00:"+str(s[len(s)-1]+10)
 
-
                             tos=0x04
                             nwtos=((s1_out<<3)+4)
                             self.func1_ipd_macd(mac_destination,ip_destination,ip_dst,mac_dst,tos,nwtos)
@@ -1609,7 +1559,6 @@ class LearningSwitch (object):
                             tos=0
                             nwtos=((s1_out<<3))
                             self.func1_ipd_macd(mac_destination,ip_destination,ip_dst,mac_dst,tos,nwtos)
-
 
                         elif len(s)==1:
                             print" Shortest_Path with also one node "
@@ -1627,16 +1576,13 @@ class LearningSwitch (object):
                 string_MAC=str(host_mac)+str(val_mac)
                 mac_d=string_MAC
 
-
                 tos=0x04
                 nwtos=((16<<3)+4)
                 self.func1(mac_d,ip_d,tos,nwtos)
 
-
                 tos=0
                 nwtos=((16<<3))
                 self.func1(mac_d,ip_d,tos,nwtos)
-
 
 
                 ShortPath=[]
@@ -1662,20 +1608,16 @@ class LearningSwitch (object):
                         ip_destination="10.0.0."+str(s[len(s)-1])
                         mac_destination="00:00:00:00:00:"+str(s[len(s)-1]+10)
 
-
                         tos=0x04
                         nwtos=((s1_out<<3)+4)
                         self.func1(mac_destination,ip_destination,tos,nwtos)
-
 
                         tos=0
                         nwtos=((s1_out<<3))
                         self.func1(mac_destination,ip_destination,tos,nwtos)
 
-
                     elif len(s)==1:
                         print" Shortest_Path with also one node "
-
 
         if C_set_port==N:
             C_set_port=0
@@ -1695,7 +1637,6 @@ class LearningSwitch (object):
 
         C_forward_lp1=C_forward_lp1+1
 
-
         msg = nx.nx_flow_mod_table_id()
         self.connection.send(msg)
 
@@ -1710,7 +1651,6 @@ class LearningSwitch (object):
             if C_forward_lp2==1:
                 if flag_forward_lp2==0:
                     flag_forward_lp2=1
-
 
             if flag_forward_lp2==1:
 
@@ -1740,8 +1680,7 @@ class LearningSwitch (object):
                 spath_dpid="ShortPath"+str(dpid)
                 spath_dpid=[]
 
-
-                for node1 in G.nodes_iter():
+                for node1 in G.nodes():
                     if node1 <=40:
                         shortest_path = NX.shortest_path(G,dpid,node1)
                         spath_dpid.append(shortest_path)
@@ -1782,7 +1721,6 @@ class LearningSwitch (object):
             if C_forward_lp2==N:
                     C_forward_lp2=0
 
-
         if C_forward_lp1==N:
             C_forward_lp1=0
 
@@ -1802,14 +1740,13 @@ class LearningSwitch (object):
 
             g = NX.read_graphml(topo_file,str)
 
-            for switch in g.nodes_iter(data = True):
+            for switch in g.nodes(data = True):
                 index=int(int(switch[0])+1)
                 Array_Country[index]=switch[1]['label']
                 dict1[index] =switch[1]['label']
             print "Dizionario1 : ",dict1
         if C_get_labels==N:
             C_get_labels=0
-
 
 def create_actions_list(actions):
 
@@ -1823,7 +1760,6 @@ def create_actions_list(actions):
 #get statistics of all switches with the filter of flag set to 1
 def print_statistics_flag1(event):
 
-
     if event.connection.dpid <=40:
 
         localtime = time.asctime( time.localtime(time.time()) )
@@ -1835,10 +1771,8 @@ def print_statistics_flag1(event):
 
         for n in event.stats:
 
-
             if n.table_id ==3  and n.priority==10 and n.match.nw_tos==132:
                 n_packets_OUT_PORT52_1=n.packet_count
-
 
             elif n.table_id ==3  and n.priority==10 and n.match.nw_tos!=132 and  n.match.nw_tos!=128:
                 port_output=n.match.nw_tos
@@ -1846,10 +1780,8 @@ def print_statistics_flag1(event):
                     ris=(port_output-4)/8
                     counts_ports_out_1[ris]=n.packet_count
 
-
             elif n.table_id ==0 and n.priority==10 and n.match.in_port==52 and n.match.nw_tos==0x04:
                 n_packets_IN_PORT52_1=n.packet_count
-
 
             elif n.table_id ==0 and n.priority==10 and n.match.in_port!=52 and n.match.nw_tos==0x04:
                 print "FLOWRULE: In_Port:",n.match.in_port,"IP_SRC",n.match.nw_src,"IP_DST",n.match.nw_dst,"DL_SRC",n.match.dl_src,"DL_DST",n.match.dl_dst,"NW_TOS:",n.match.nw_tos," Packet count: ", n.packet_count
@@ -1857,12 +1789,10 @@ def print_statistics_flag1(event):
                 counts_ports_in_1[port_input]=n.packet_count
 
 
-
         return n_packets_OUT_PORT52_1,n_packets_IN_PORT52_1,counts_ports_out_1,counts_ports_in_1
 
 #get statistics of all switches with the filter of flag set to 0
 def print_statistics_flag0(event):
-
 
     if event.connection.dpid <=40:
 
@@ -1874,7 +1804,6 @@ def print_statistics_flag0(event):
         counts_ports_out_0=[0]*20
 
         for n in event.stats:
-
 
             if n.table_id ==3  and n.priority==10 and n.match.nw_tos==128:
                 n_packets_OUT_PORT52_0=n.packet_count
@@ -1888,12 +1817,10 @@ def print_statistics_flag0(event):
             elif n.table_id ==0 and n.priority==10 and n.match.in_port==52 and n.match.nw_tos==0:
                 n_packets_IN_PORT52_0=n.packet_count
 
-
             elif n.table_id ==0 and n.priority==10 and  n.match.in_port!=52 and n.match.nw_tos==0:
                 print "FLOWRULE: In_Port:",n.match.in_port,"IP_SRC",n.match.nw_src,"IP_DST",n.match.nw_dst,"DL_SRC",n.match.dl_src,"DL_DST",n.match.dl_dst,"NW_TOS:",n.match.nw_tos," Packet count: ", n.packet_count
                 port_input=n.match.in_port
                 counts_ports_in_0[port_input]=n.packet_count
-
 
 
         return n_packets_OUT_PORT52_0,n_packets_IN_PORT52_0,counts_ports_out_0,counts_ports_in_0
@@ -1987,7 +1914,6 @@ def create_flow_stats_list(event):
 
                 a,b,c,d=print_statistics_flag0(event)
 
-
                 finaloutput0=a-Count_out0_PORT52[dpid]
 
                 item['Port']=port52
@@ -2008,13 +1934,11 @@ def create_flow_stats_list(event):
                 item['Count']=finalinput0
                 Results.append(item)
 
-
                 Count_out0_PORT52[dpid]=a
                 Count_in0_PORT52[dpid]=b
 
                 sum_output0_port52=sum_output0_port52+finaloutput0
                 sum_input0_port52=sum_input0_port52+finalinput0
-
 
 
                 for index, elem in enumerate(c):
@@ -2035,7 +1959,6 @@ def create_flow_stats_list(event):
                         Count_out0_PORTS[(dpid*41)+porta1]=c[porta1]
                         Results.append(item)
 
-
                 for index, element in enumerate(d):
                     if element!=0:
                         item={}
@@ -2054,16 +1977,13 @@ def create_flow_stats_list(event):
                         Count_in0_PORTS[(dpid*41)+porta]=d[porta]
                         Results.append(item)
 
-
                 if cont2==N:
 
                     cont2=0
 
 
 
-
             elif flag_flow_stats==0:
-
 
                 cont1=cont1+1
 
@@ -2076,7 +1996,6 @@ def create_flow_stats_list(event):
                 item['SourceNode']=Array_Country[dpid]
 
                 a,b,c,d=print_statistics_flag1(event)
-
 
                 finaloutput1=a-Count_out1_PORT52[dpid]
 
@@ -2097,7 +2016,6 @@ def create_flow_stats_list(event):
                 item['Direction']=direct2
                 item['Count']=finalinput1
                 Results.append(item)
-
 
                 Count_out1_PORT52[dpid]=a
                 Count_in1_PORT52[dpid]=b
@@ -2140,11 +2058,9 @@ def create_flow_stats_list(event):
                         Count_in1_PORTS[(dpid*41)+porta3]=d[porta3]
                         Results.append(item)
 
-
                 if cont1==N:
 
                     cont1=0
-
 
 
             if C_flow_stats_1==N:
@@ -2177,7 +2093,6 @@ def create_flow_stats_list(event):
             for pid in range(0,41):
                 print "DPID : ",pid,"Count in 1 porta 52 ",Count_in1_PORT52[pid]
 
-
             print "The sum of all counters in output in the port 52 with flag 1 : ",sum_output1_port52
             print "The sum of all counters in input in the port 52 with flag  1 : ",sum_input1_port52
             print "The sum af all counters in output in the port 52 with flag 0 : ",sum_output0_port52
@@ -2189,9 +2104,7 @@ def create_flow_stats_list(event):
             sum_output0_port52=0
             sum_input0_port52=0
 
-
             C_flow_stats=0
-
 
 def is_valid_ipv4_address(address):
     try:
@@ -2217,37 +2130,34 @@ def is_valid_mac_address(address):
 class l2_learning (object):
 
     global G
-  
-  
+
     def __init__ (self,transparent):
-        return
-  
-    def startup():
-  
-        core.openflow.addListeners(self, priority = 0)
-        core.openflow_discovery.addListeners(self)
-        self.transparent = transparent
-  
+
+        def startup():
+
+            core.openflow.addListeners(self, priority = 0)
+            core.openflow_discovery.addListeners(self)
+            self.transparent = transparent
+
         core.call_when_ready(startup, ('openflow','openflow_discovery'))
-  
-  
+
     def _handle_LinkEvent(self, event):
-  
+
         global Array
         global M
         global C_link_event
         global dict2
-  
+
         l = event.link
-  
+
         sw1 = l.dpid1
         sw2 = l.dpid2
         pt1 = l.port1
         pt2 = l.port2
-  
+
         G.add_node( sw1 )
         G.add_node( sw2 )
-  
+
         if event.added:
             G.add_edge(sw1,sw2)
         if event.removed:
@@ -2255,41 +2165,41 @@ class l2_learning (object):
                 G.remove_edge(sw1,sw2)
             except:
                 print "Remove edge "
-  
+
         C_link_event=C_link_event+1
         print "Counter : ",C_link_event,"sw1 : ",l.dpid1,"sw2 :",l.dpid2,"Port1: ",pt1,"Port2 : ",pt2
-  
+
         array=[]
         if sw1 <=40 and sw2 <=40:
-  
+
             array.insert(0,sw1)
             array.insert(1,sw2)
             array.insert(2,pt1)
             array.insert(3,pt2)
-  
+
             Array.append(array)
-  
+
             if sw1 not in dict2:
                 dict2[sw1] = {}
             dict2[sw1][pt1]=sw2
-  
+
             if sw2 not in dict2:
                 dict2[sw2] = {}
             dict2[sw2][pt2]=sw1
-  
+
         if C_link_event==M:
-  
+
             print "Fine Link detection..."
             print "Dizionario2 :",dict2
-  
+
     def _handle_ConnectionUp (self, event):
-  
+
         LearningSwitch(event.connection, self.transparent)
-  
+
 def signal_handler(signal,frame):
 
     global Results
-    print "Results: ",Results,"LEN : ",len(Results)
+    #print "Results: ",Results,"LEN : ",len(Results)
 
     with open('results.json', 'w') as outfile:
                 json.dump(Results, outfile, indent=4)

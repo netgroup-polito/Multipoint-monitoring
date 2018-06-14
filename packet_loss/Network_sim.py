@@ -89,7 +89,7 @@ def myNetwork(topo_file):
             #MAC_Italy=host_mac
             #print "IP IT",IP_Italy
             #print "MAC IT",MAC_Italy
-        debug("Host MAC: %s"%host_mac)
+        debug("Host MAC: %s "%host_mac)
         debug("Host IP: %s\n"%host_ip)
         arrayIpHost.append(host_ip)
         arrayHost.append(h)
@@ -151,10 +151,10 @@ def myNetwork(topo_file):
     #time.sleep(60)
     #time.sleep(50)
 
-    info("*** Testing net connectivity\n")
+    info("*** Test in progress\n")
 
     H1=arrayHost[0]
-    H1.cmd("rm -r /tmp/pnpm")
+    H1.cmd("rm -rf /tmp/pnpm >> error.log 2>&1 ")
     H1.cmd("screen -S Server -d -m python -m trace -t Server.py"+" "+str(H1.IP())+" ")
 
     for h in net.hosts:
