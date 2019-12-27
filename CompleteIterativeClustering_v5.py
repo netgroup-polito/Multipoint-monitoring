@@ -355,7 +355,7 @@ if __name__ == "__main__":
         # DEBUG
         if len(cluster_extended_graph.nodes()) < len(cluster_monitored_graph.nodes()):
             sys.stderr.write("All_paths : %s\n\n"%All_paths)
-            print "-------------------------ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR--------------------------"
+            print "---- ERROR ----"
             sys.stderr.write("Edge_cluster : %s\n\n"%Edges_cluster)
             sys.stderr.write("Monitored to EXt : %s\n\n"%monitored_to_extended)
             sys.stderr.write("Ext to Monit : %s\n\n"%extended_to_monitored)
